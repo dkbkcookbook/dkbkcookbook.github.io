@@ -296,7 +296,7 @@
                 background: linear-gradient(to bottom, #2a1307 0%, var(--cover-color) 8%, var(--cover-color) 95%, #2a1307 100%);
             }
             
-            /* 1. SOLID STATIC BACKING LAYER (Hides any transparency gaps during flips) */
+            /* SOLID STATIC BACKING LAYER (Hides any transparency gaps during flips) */
             .page-backing {
                 display: block; 
                 position: absolute;
@@ -324,22 +324,30 @@
                 border-radius: 2px 6px 6px 2px;
             }
             
-            /* 2. TOP NAVIGATION TABS FRAME */
+            /* TOP NAVIGATION TABS FRAME */
             .bookmarks { 
+                display: flex;          /* Added to manage strict row alignment */
                 flex-direction: row; 
+                flex-wrap: nowrap;      /* Prevents tabs from wrapping below each other */
+                box-sizing: border-box;
                 top: -45px;
-                right: auto;
-                left: 25px;
+                right: 25px;            /* Bound to the right side of the book to lock containment */
+                left: 25px;             /* Keeps the left positioning anchor intact */
                 gap: 8px; 
-                z-index: 2; /* Layered safely above the backing sheet */
+                z-index: 2;             /* Layered safely above the backing sheet */
             }
             .bookmark { 
                 writing-mode: horizontal-tb; 
-                padding: 18px 25px; 
+                flex: 1;                /* Divides space evenly and prevents clipping out of the book */
+                min-width: 0;           /* Allows text to safely flex smaller during heavy zoom */
+                text-align: center;
+                padding: 18px 10px;     /* Kept vertical padding exactly identical, but made horizontal responsive */
+                font-size: 1rem;
                 border-radius: 10px 10px 0 0; 
                 transform: translateY(15px); 
                 border: 1px solid rgba(0,0,0,0.3); 
                 border-bottom: none; 
+                white-space: nowrap;    /* Keeps words on one clean line */
             }
             .bookmark::after { 
                 top: 5px; bottom: -2px; right: 5px; left: 5px; 
@@ -353,18 +361,17 @@
                 box-shadow: 0 -4px 15px rgba(0,0,0,0.3); 
             }
             
-            /* 3. ACTIVE MAIN PAGE CONTENT CANVAS */
+            /* ACTIVE MAIN PAGE CONTENT CANVAS */
             .page { 
                 top: 10px;
                 bottom: 15px;
                 left: 15px; 
-                right: 15px; /* Perfectly synchronized width coordinates */
+                right: 15px; 
                 padding: 35px 25px; 
                 box-shadow: 0 10px 20px rgba(0,0,0,0.25); 
-                z-index: 10; /* Sticks to the absolute front layer */
+                z-index: 10; 
             }
             
-            /* Clean up and hide unnecessary edge components on small viewpoints */
             .book::before { display: none; }
             h1 { font-size: 2.2rem; }
         }
