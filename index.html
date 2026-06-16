@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DekuBaku Cookbook | Interest Check</title>
+    <style>
+        :root {
+            --cover-color: #3e1f0e; /* Rich leather brown */   
+            --page-color: #fcf8ee;  /* Warm cream paper */   
+            --page-edge: #e8dfc8;   /* Under-page paper stack edge */
+            --text-main: #2c2c2c;
+            --baku-orange: #d35400;
+            --deku-green: #27ae60;
+            --spine-shadow: rgba(0,0,0,0.18);
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: radial-gradient(circle at center, #2b3e50, #16202c);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .desk-area {
+            display: flex;
+            align-items: flex-start;
+            perspective: 1500px;
+            width: 100%;
+            max-width: 1000px;
+            justify-content: center;
+        }
+
+        /* --- THE BOOK COVER --- */
+        .book {
+            position: relative;
+            width: 100%;
+            max-width: 850px;
+            height: 750px;
+            background: linear-gradient(to right, #2a1307 0%, var(--cover-color) 8%, var(--cover-color) 95%, #2a1307 100%);
+            border-radius: 6px 18px 18px 6px;
+            box-shadow: 25px 25px 50px rgba(0,0,0,0.5), inset 5px 0 15px rgba(255,255,255,0.05);
+            z-index: 2; 
+        }
+
+        /* --- THE UNDERLYING PAGE STACK --- */
+        .book::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            bottom: 15px;
+            left: 55px; 
+            right: 20px; 
+            background: var(--page-edge);
+            border-radius: 2px 8px 8px 2px;
+            box-shadow: 
+                inset -4px 0 10px rgba(0,0,0,0.05), 
+                -2px 0 3px rgba(0,0,0,0.08),
+                inset -1px 0 0 #d9d0b8,
+                inset -2px 0 0 #f0e9d5;
+            z-index: 1; 
+            border-right: 1px solid #d1c8b0;
+        }
+
+        /* --- STATIC BOTTOM PAGE LAYER --- */
+        /* CLEANED: Removed the harsh, muddy dark shadow. Uses a highly crisp, realistic inner-crease edge instead. */
+        .page-backing {
+            position: absolute;
+            top: 10px;
+            bottom: 10px;
+            left: 50px;
+            right: 65px;
+            background: var(--page-color);
+            background-image: linear-gradient(90deg, 
+                rgba(0, 0, 0, 0.03) 0%, 
+                transparent 5%, 
+                transparent 92%, 
+                rgba(0, 0, 0, 0.04) 96%, 
+                rgba(0, 0, 0, 0.15) 100%
+            );
+            border-radius: 2px 10px 10px 2px;
+            border: 1px solid #dfd7c2;
+            z-index: 2; 
+            pointer-events: none;
+            box-shadow: inset 35px 0 45px var(--spine-shadow);
+        }
+
+        .page-backing::after {
+            content: '';
+            position: absolute;
+            top: 20px; bottom: 20px; left: 20px; right: 20px;
+            border: 1px double #c8c0ad;
+            opacity: 0.3;
+            border-radius: 2px 6px 6px 2px;
+        } 
+
+        /* --- RIGHT-ALIGNED TABS --- */
+        .bookmarks {
+            position: absolute;
+            top: 70px;
+            right: 18px; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 3; 
+        }
+
+        .bookmark {
+            position: relative;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            padding: 32px 25px; 
+            text-decoration: none;
+            color: white;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            border-radius: 0 14px 14px 0; 
+            box-shadow: 4px 2px 8px rgba(0,0,0,0.22), inset 1px 0 5px rgba(255,255,255,0.2);
+            border: 1px solid rgba(0,0,0,0.25);
+            border-left: none;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s;
+            transform: translateX(5px); 
+            cursor: pointer;
+        }
+
+        /* Stitching detail on the tabs */
+        .bookmark::after {
+            content: '';
+            position: absolute;
+            top: 5px; bottom: 5px; right: 5px; left: -2px;
+            border: 1px dashed rgba(255,255,255,0.45);
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bookmark:hover {
+            transform: translateX(15px); 
+            filter: brightness(1.1);
+        }
+
+        .bookmark.active {
+            transform: translateX(25px); 
+            filter: brightness(1.15);
+            box-shadow: 6px 3px 10px rgba(0,0,0,0.3), inset 1px 0 5px rgba(255,255,255,0.25);
+        }
+
+        /* Rich gradients */
+        .bm-orange { background: linear-gradient(135deg, var(--baku-orange), #a84300); }
+        .bm-green { background: linear-gradient(135deg, var(--deku-green), #196f3d); }
+        .bm-charcoal { background: linear-gradient(135deg, #4b6584, #2c3e50); }
+        .bm-gold { background: linear-gradient(135deg, #f39c12, #b9770e); }
+
+        /* --- THE ACTIVE TOP PAGE --- */
+        .page {
+            position: absolute;
+            top: 10px;
+            bottom: 10px;
+            left: 50px; 
+            right: 65px; 
+            background: var(--page-color);
+            background-image: linear-gradient(90deg, rgba(0,0,0,0.03) 0%, transparent 5%, transparent 95%, rgba(0,0,0,0.02) 100%);
+            border-radius: 2px 10px 10px 2px;
+            padding: 55px 65px; 
+            box-shadow: 
+                8px 0 15px -8px rgba(0,0,0,0.25), 
+                inset 35px 0 45px var(--spine-shadow), 
+                -1px 0 3px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            display: none;
+            transform-origin: left center;
+            scrollbar-width: thin;
+            scrollbar-color: #d1c9b8 transparent;
+            z-index: 10; 
+            border: 1px solid #dfd7c2;
+        }
+
+        .page::after {
+            content: '';
+            position: absolute;
+            top: 20px; bottom: 20px; left: 20px; right: 20px;
+            border: 1px double #c8c0ad;
+            pointer-events: none;
+            border-radius: 2px 6px 6px 2px;
+        }
+
+        .page.active { display: block; }
+
+        /* --- TYPOGRAPHY & CONTENT --- */
+        h1, h2 {
+            font-family: 'Georgia', serif;
+            color: var(--cover-color);
+            text-align: center;
+            border-bottom: 2px solid #e0d7c3;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        h1::after, h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background-color: var(--baku-orange);
+        }
+
+        h1 { font-size: 2.8rem; text-transform: uppercase; letter-spacing: 3px; margin-top: 15px; }
+        h2 { font-size: 2rem; }
+        p, li { line-height: 1.8; font-size: 1.2rem; color: #444; } 
+        ul { list-style-type: square; padding-left: 20px; }
+        ul li { margin-bottom: 15px; }
+        strong { color: var(--cover-color); }
+
+        .btn {
+            display: block;
+            width: fit-content;
+            margin: 45px auto;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--baku-orange), #b84a00);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-weight: bold;
+            font-size: 1.15rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.2s ease;
+            text-align: center;
+            position: relative;
+            z-index: 20; 
+            box-shadow: 0 4px 15px rgba(211, 84, 0, 0.3);
+            border: 1px solid #a04000;
+        }
+
+        .btn:hover { 
+            background: linear-gradient(135deg, var(--deku-green), #1e8449); 
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
+            border-color: #196f3d;
+            transform: translateY(-2px);
+        }
+
+        .mod-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 35px;
+        }
+
+        .mod-item {
+            text-align: center;
+            font-weight: bold;
+            color: var(--cover-color);
+            padding: 18px;
+            background: rgba(0,0,0,0.02);
+            border: 1px solid #e0d7c3;
+            border-radius: 6px;
+            font-size: 1.15rem;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+        }
+
+        /* --- PAGE FLIP ANIMATIONS --- */
+        @keyframes flipOut {
+            0% { transform: rotateY(0deg); opacity: 1; box-shadow: 8px 0 15px -8px rgba(0,0,0,0.25); }
+            100% { transform: rotateY(-90deg); opacity: 0; box-shadow: 0px 0 0px rgba(0,0,0,0); }
+        }
+
+        @keyframes flipIn {
+            0% { transform: rotateY(90deg); opacity: 0; box-shadow: 0px 0 0px rgba(0,0,0,0); }
+            100% { transform: rotateY(0deg); opacity: 1; box-shadow: 8px 0 15px -8px rgba(0,0,0,0.25); }
+        }
+
+       /* --- MOBILE SCREEN RESPONSIVENESS --- */
+        @media (max-width: 850px) {
+            .desk-area { flex-direction: column; align-items: center; padding: 10px; }
+            
+            .book { 
+                height: auto; 
+                min-height: 700px; 
+                padding: 5px; 
+                border-radius: 10px; 
+                margin-top: 55px; 
+                background: linear-gradient(to bottom, #2a1307 0%, var(--cover-color) 8%, var(--cover-color) 95%, #2a1307 100%);
+            }
+            
+            /* 1. SOLID STATIC BACKING LAYER (Hides any transparency gaps during flips) */
+            .page-backing {
+                display: block; 
+                position: absolute;
+                top: 10px;
+                bottom: 15px;
+                left: 15px;
+                right: 15px;
+                z-index: 1; /* Sits completely behind the top tabs and main pages */
+                background: var(--page-color);
+                box-shadow: inset 0 35px 45px var(--spine-shadow);
+                background-image: linear-gradient(180deg, 
+                    rgba(0, 0, 0, 0.03) 0%, 
+                    transparent 5%, 
+                    transparent 92%, 
+                    rgba(0, 0, 0, 0.04) 96%, 
+                    rgba(0, 0, 0, 0.12) 100%
+                );
+                border-radius: 2px 10px 10px 2px;
+                border: 1px solid #dfd7c2;
+            }
+            .page-backing::after {
+                top: 15px; bottom: 15px; left: 15px; right: 15px; 
+                border: 1px double #c8c0ad;
+                opacity: 0.3;
+                border-radius: 2px 6px 6px 2px;
+            }
+            
+            /* 2. TOP NAVIGATION TABS FRAME */
+            .bookmarks { 
+                flex-direction: row; 
+                top: -45px;
+                right: auto;
+                left: 25px;
+                gap: 8px; 
+                z-index: 2; /* Layered safely above the backing sheet */
+            }
+            .bookmark { 
+                writing-mode: horizontal-tb; 
+                padding: 18px 25px; 
+                border-radius: 10px 10px 0 0; 
+                transform: translateY(15px); 
+                border: 1px solid rgba(0,0,0,0.3); 
+                border-bottom: none; 
+            }
+            .bookmark::after { 
+                top: 5px; bottom: -2px; right: 5px; left: 5px; 
+                border: 1px dashed rgba(255,255,255,0.5); 
+                border-bottom: none; 
+                border-radius: 8px 8px 0 0; 
+            }
+            .bookmark:hover { transform: translateY(8px); }
+            .bookmark.active { 
+                transform: translateY(0px); 
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.3); 
+            }
+            
+            /* 3. ACTIVE MAIN PAGE CONTENT CANVAS */
+            .page { 
+                top: 10px;
+                bottom: 15px;
+                left: 15px; 
+                right: 15px; /* Perfectly synchronized width coordinates */
+                padding: 35px 25px; 
+                box-shadow: 0 10px 20px rgba(0,0,0,0.25); 
+                z-index: 10; /* Sticks to the absolute front layer */
+            }
+            
+            /* Clean up and hide unnecessary edge components on small viewpoints */
+            .book::before { display: none; }
+            h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="desk-area">
+        
+        <div class="book">
+            
+            <div class="page-backing"></div>
+
+            <div class="bookmarks">
+                <a href="#" class="bookmark bm-orange active" onclick="showPage(event, 'home')">Home</a>
+                <a href="#" class="bookmark bm-green" onclick="showPage(event, 'mods')">Mods</a>
+                <a href="#" class="bookmark bm-charcoal" onclick="showPage(event, 'schedule')">Dates</a>
+                <a href="#" class="bookmark bm-gold" onclick="showPage(event, 'faq')">FAQ</a>
+            </div>
+
+            <div id="home" class="page active">
+                <h1>Amakara</h1>
+                <p style="text-align: center; font-style: italic; color: #7a7161;">DekuBaku Cookbook Zine</p>
+                <p>Amakara is a hybrid cookbook-zine project focused on <strong>Top!Izuku Midoriya</strong> and <strong>Bottom!Katsuki Bakugou</strong> dynamics within the <strong>Izuku Midoriya/Katsuki Bakugou</strong> pairing.</p>
+                <p></p>
+                <!-- <a href="YOUR_TALLY_LINK_HERE" class="btn" target="_blank">Fill Out Interest Check</a> -->
+            </div>
+
+            <div id="mods" class="page">
+                <h2>The Team</h2>
+                <p>Our team is managed by a team experienced in running exchanges and zines. Meet the moderators:</p>
+                <div class="mod-list">
+                    <div class="mod-item">
+                        <p><strong>Jay</strong></p>
+                        <p>Head & Finance Mod</p>
+                    </div>
+                    <div class="mod-item">
+                        <p><strong>Bee</strong></p>
+                        <p>Writing Mod</p>
+                    </div>
+                    <div class="mod-item">
+                        <p><strong>Celestibex</strong></p>
+                        <p>Shipping Mod</p>
+                    </div>
+                    <div class="mod-item">
+                        <p><strong>Dent</strong></p>
+                        <p>Art Mod</p>
+                    </div>
+                    <div class="mod-item">
+                        <p><strong>Pluto</strong></p>
+                        <p>Chef Mod</p>
+                    </div>
+                    <div class="mod-item">
+                        <p><strong>Presto</strong></p>
+                        <p>Chef Intern Mod</p>
+                    </div>
+                    <div class="mod-item">
+                        <p><strong>Itsakura</strong></p>
+                        <p>Social Media Mod</p>
+                    </div>
+                    <div class="mod-item">
+                        <p><strong>Taylor</strong></p>
+                        <p>Graphics Mod</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="schedule" class="page">
+                <h2>Project Timeline</h2>
+                <ul>
+                    <li><strong>July 2026:</strong> Launch</li>
+                    <li><strong>August 2026:</strong> Interest Check</li>
+                    <li><strong>October 2026:</strong> Contributor Application</li>
+                </ul>
+                <p><em>Note: Dates are subject to change.</em></p>
+            </div>
+
+            <div id="faq" class="page">
+                <h2>Frequently Asked Questions</h2>
+                <ul>
+                    <li><strong>Is this project for charity or profit?</strong><br>Details regarding compensation and charity donations will be finalized after evaluating the interest check results.</li>
+                    <li><strong>What kind of contributors are you looking for?</strong><br>We will be looking for page artists, spot artists, merch artists, writers, and chefs.</li>
+                    <li><strong>What do you mean by hybrid?</strong><br>Hybrid for us means a zine and a cookbook as one book. Writers and artists will collaborate with a chef to create a piece that goes along with the recipe crafted. More information is to come after our interest check.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let isAnimating = false;
+
+        function showPage(event, targetId) {
+            event.preventDefault();
+            
+            if (isAnimating) return;
+
+            const currentPage = document.querySelector('.page.active');
+            const targetPage = document.getElementById(targetId);
+
+            if (currentPage === targetPage) return;
+
+            isAnimating = true;
+
+            document.querySelectorAll('.bookmark').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            currentPage.style.animation = 'flipOut 0.4s ease-in forwards';
+
+            setTimeout(() => {
+                currentPage.classList.remove('active');
+                currentPage.style.animation = '';
+                
+                targetPage.classList.add('active');
+                targetPage.style.animation = 'flipIn 0.4s ease-out forwards';
+
+                setTimeout(() => {
+                    targetPage.style.animation = '';
+                    isAnimating = false;
+                }, 400);
+
+            }, 400);
+        }
+    </script>
+</body>
+</html>
