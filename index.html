@@ -3,10 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Amakara: A DkBk Cookbook Zine" />
-    <meta property="og:description" content="The info site for Amakara, a hybrid cookbook-zine project focused on DekuBaku dynamics." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://tak11e.github.io/dkbk-cookbook-zine"/>
     <link rel="icon" type="image/png" href="AMAKARA_Logo_MAIN_Transparent.png">
     <title>DekuBaku Cookbook</title>
     <style>
@@ -490,27 +486,39 @@
 
         /* --- MOBILE SCREEN ADAPTABILITY --- */
         @media (max-width: 850px) {
-            .desk-area { padding: 10px; }
+            .desk-area { 
+                padding: 10px; 
+            }
             
             .book { 
                 height: auto; 
                 min-height: 650px; 
-                flex-direction: column;
-                padding: 12px; 
+                flex-direction: row;
+                padding: 12px 28px 12px 12px; 
                 border-radius: 12px; 
-                margin-top: 50px;
+                margin-top: 20px;
                 background: linear-gradient(to bottom, #2a1307 0%, var(--cover-color) 6%, var(--cover-color) 94%, #2a1307 100%);
             }
-            .book::before, .base-left, .flipping-page-container { display: none !important; }
+            
+            .book::before, .base-left, .flipping-page-container { 
+                display: none !important; 
+            }
 
             .base-right-under-page { 
-                position: relative; top: 0; right: 0; width: 100%; height: auto; min-height: 580px;
-                border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 5;
-                overflow-y: auto; /* Uses smooth dynamic scroll on mobile views safely */
+                position: relative; 
+                top: 0; 
+                right: 0; 
+                width: 100%; 
+                height: auto; 
+                min-height: 580px;
+                border-radius: 8px; 
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05); 
+                z-index: 5;
+                overflow-y: auto; 
             }
 
             .page-scroll-content {
-                padding: 35px 22px;
+                padding: 35px 20px;
             }
 
             .page-scroll-content::after {
@@ -518,17 +526,48 @@
             }
 
             .bookmarks-wrapper { 
-                top: -33px; left: 15px; right: 15px; gap: 6px; flex-direction: row; width: auto; 
+                top: 30px; 
+                right: -2px; 
+                left: auto;
+                gap: 10px; 
+                flex-direction: column; 
+                width: auto; 
             }
+            
             .bookmark { 
-                writing-mode: horizontal-tb; text-orientation: mixed; flex: 1; text-align: center;
-                padding: 16px 4px; font-size: 0.95rem; letter-spacing: 1px; border-radius: 6px 6px 0 0;
-                transform: translateY(12px) !important; border: 1px solid rgba(0,0,0,0.2); border-bottom: none;
-                white-space: nowrap; width: auto;
+                writing-mode: vertical-rl; 
+                text-orientation: mixed; 
+                flex: none; 
+                text-align: left;
+                padding: 18px 13px 18px 10px; /* Slim down tab padding for mobile mobile screens */
+                font-size: 0.85rem; 
+                letter-spacing: 1.5px; 
+                border-radius: 0 6px 6px 0;
+                transform: translateX(0) !important; 
+                border: 1px solid rgba(0,0,0,0.2); 
+                border-left: 2px solid rgba(0,0,0,0.3);
+                white-space: nowrap; 
+                width: auto;
             }
-            .bookmark::after { top: 4px; bottom: -1px; right: 4px; left: 4px; border-radius: 4px 4px 0 0; border-bottom: none; }
-            .bookmark:hover { transform: translateY(6px) !important; }
-            .bookmark.active { transform: translateY(0px) !important; box-shadow: 0 -3px 10px rgba(0,0,0,0.25); z-index: 10 !important; }
+            
+            .bookmark::after { 
+                top: 3px; 
+                bottom: 3px; 
+                right: 3px; 
+                left: 3px; 
+                border-radius: 0 4px 4px 0; 
+                border-left: none; 
+            }
+            
+            .bookmark:hover { 
+                transform: translateX(3px) !important; 
+            }
+            
+            .bookmark.active { 
+                transform: translateX(6px) !important; 
+                box-shadow: 2px 2px 6px rgba(0,0,0,0.2); 
+                z-index: 10 !important; 
+            }
             
             h1 { font-size: 2rem; }
             h2 { font-size: 1.5rem; }
